@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Dashboard - AI Study Assistant</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+
+        /* =========================
+           THEME BUTTON
+        ========================= */
+
+        #themeBtn {
+            border: none;
+            padding: 9px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 15px 40px 0 auto;
+            display: block;
+        }
+
+
+        /* =========================
+           DARK MODE
+        ========================= */
+
+        body.dark {
+            background: #121212;
+            color: #eeeeee;
+        }
+
+        body.dark .stat,
+        body.dark .card {
+            background: #1e1e1e;
+            color: #eeeeee;
+        }
+
+        body.dark .subtitle,
+        body.dark .card p {
+            color: #cccccc;
+        }
+
+        body.dark .welcome,
+        body.dark .card h2 {
+            color: #8fa7ff;
+        }
+
+        body.dark .search-box input {
+            background: #252525;
+            color: white;
+            border-color: #555;
+        }
+
+        body.dark .search-box input::placeholder {
+            color: #aaa;
+        }
+
+
+        /* =========================
+           BODY
+        ========================= */
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f7ff;
+            color: #111827;
+        }
+
+
+        /* =========================
+           HEADER
+        ========================= */
+
+        .header {
+            background: #243b9b;
+            color: white;
+            padding: 20px 40px;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 23px;
+            font-weight: bold;
+        }
+
+
+        /* =========================
+           SUBJECTS LINK
+        ========================= */
+
+        .subjects-link {
+            color: white;
+            text-decoration: none;
+            margin-right: 15px;
+            font-weight: bold;
+        }
+
+        .subjects-link:hover {
+            text-decoration: underline;
+        }
+
+
+        /* =========================
+           LOGOUT
+        ========================= */
+
+        .logout {
+            background: white;
+            color: #243b9b;
+            padding: 9px 18px;
+            border-radius: 6px;
+            text-decoration: none;
+        }
+
+        .logout:hover {
+            background: #eeeeee;
+        }
+
+
+        /* =========================
+           CONTAINER
+        ========================= */
+
+        .container {
+            max-width: 1100px;
+            margin: auto;
+            padding: 40px 20px;
+        }
+
+
+        /* =========================
+           PROFILE CARD
+        ========================= */
+
+        .profile-card {
+            background: white;
+            padding: 22px 25px;
+            border-radius: 12px;
+            margin-bottom: 35px;
+
+            box-shadow:
+                0 4px 15px rgba(0,0,0,0.08);
+        }
+
+        body.dark .profile-card {
+            background: #1e1e1e;
+        }
+
+        .profile-card h2 {
+            color: #243b9b;
+            margin-top: 0;
+        }
+
+        body.dark .profile-card h2 {
+            color: #8fa7ff;
+        }
+
+        .profile-card p {
+            color: #555;
+            line-height: 1.6;
+        }
+
+        body.dark .profile-card p {
+            color: #cccccc;
+        }
+
+
+        /* =========================
+           WELCOME
+        ========================= */
+
+        .welcome {
+            color: #243b9b;
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            color: #555;
+        }
+
+
+        /* =========================
+           SEARCH BOX
+        ========================= */
+
+        .search-box {
+            display: flex;
+            gap: 10px;
+            margin: 25px 0;
+        }
+
+        .search-box input {
+            flex: 1;
+            padding: 12px;
+
+            border: 1px solid #ccc;
+            border-radius: 6px;
+
+            font-size: 16px;
+            outline: none;
+        }
+
+        .search-box input:focus {
+            border-color: #243b9b;
+        }
+
+        .search-box button {
+            background: #243b9b;
+            color: white;
+
+            border: none;
+            padding: 12px 20px;
+
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .search-box button:hover {
+            background: #172b75;
+        }
+
+
+        /* =========================
+           STATS
+        ========================= */
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .stat {
+            background: white;
+
+            padding: 25px;
+            border-radius: 12px;
+
+            text-align: center;
+
+            box-shadow:
+                0 4px 15px rgba(0,0,0,0.08);
+        }
+
+        .stat-icon {
+            font-size: 30px;
+        }
+
+        .stat h3 {
+            margin: 10px 0;
+            color: #243b9b;
+        }
+
+        body.dark .stat h3 {
+            color: #8fa7ff;
+        }
+
+        .number {
+            font-size: 30px;
+            font-weight: bold;
+        }
+
+
+        /* =========================
+           FEATURES
+        ========================= */
+
+        .features {
+            display: grid;
+
+            grid-template-columns: repeat(2, 1fr);
+
+            gap: 25px;
+
+            margin-top: 25px;
+        }
+
+
+        /* =========================
+           FEATURE CARD
+        ========================= */
+
+        .card {
+            background: white;
+
+            padding: 30px;
+
+            border-radius: 12px;
+
+            box-shadow:
+                0 4px 15px rgba(0,0,0,0.08);
+
+            transition: transform 0.2s ease,
+                        box-shadow 0.2s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+
+            box-shadow:
+                0 7px 20px rgba(0,0,0,0.12);
+        }
+
+        .card h2 {
+            color: #243b9b;
+            margin-top: 0;
+        }
+
+        .card p {
+            color: #555;
+            line-height: 1.6;
+        }
+
+
+        /* =========================
+           SUBJECT CARD
+        ========================= */
+
+        .subject-card {
+            background: white;
+
+            padding: 30px;
+
+            border-radius: 12px;
+
+            box-shadow:
+                0 4px 15px rgba(0,0,0,0.08);
+
+            transition: transform 0.2s ease,
+                        box-shadow 0.2s ease;
+        }
+
+        .subject-card:hover {
+            transform: translateY(-3px);
+
+            box-shadow:
+                0 7px 20px rgba(0,0,0,0.12);
+        }
+
+        .subject-card h2 {
+            color: #243b9b;
+            margin-top: 0;
+        }
+
+        .subject-card p {
+            color: #555;
+            line-height: 1.6;
+        }
+
+        body.dark .subject-card {
+            background: #1e1e1e;
+            color: #eeeeee;
+        }
+
+        body.dark .subject-card h2 {
+            color: #8fa7ff;
+        }
+
+        body.dark .subject-card p {
+            color: #cccccc;
+        }
+
+
+        /* =========================
+           BUTTON
+        ========================= */
+
+        .btn {
+            display: inline-block;
+
+            background: #243b9b;
+            color: white;
+
+            padding: 11px 20px;
+
+            border-radius: 6px;
+
+            text-decoration: none;
+
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            background: #172b75;
+        }
+
+
+        /* =========================
+           MOBILE
+        ========================= */
+
+        @media (max-width: 700px) {
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            .features {
+                grid-template-columns: 1fr;
+            }
+
+            .header {
+                padding: 15px 20px;
+            }
+
+            .logo {
+                font-size: 18px;
+            }
+
+            .subjects-link {
+                margin-right: 8px;
+            }
+
+            .logout {
+                padding: 7px 12px;
+            }
+
+            #themeBtn {
+                margin-right: 20px;
+            }
+
+            .search-box {
+                flex-direction: column;
+            }
+
+        }
+
+    </style>
+
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+
+<body>
+
+
+    <!-- =========================
+         HEADER
+    ========================= -->
+
+    <div class="header">
+
+        <div class="logo">
+            🤖 AI Study Assistant
+        </div>
+
+        <div>
+
+            <a href="/subjects"
+               class="subjects-link">
+                📚 Subjects
+            </a>
+
+            <a href="/logout"
+               class="logout">
+                Logout
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         DARK MODE BUTTON
+    ========================= -->
+
+    <button id="themeBtn"
+            onclick="toggleTheme()">
+
+        🌙 Dark Mode
+
+    </button>
+
+
+    <!-- =========================
+         MAIN CONTAINER
+    ========================= -->
+
+    <div class="container">
+
+
+        <!-- =========================
+             PROFILE
+        ========================= -->
+
+        <div class="profile-card">
+
+            <h2>
+                👤 My Profile
+            </h2>
+
+            <p>
+                View your name, email, course and
+                academic year.
+            </p>
+
+            <a href="/profile"
+               class="btn">
+
+                View Profile
+
+            </a>
+
+        </div>
+
+
+        <!-- =========================
+             WELCOME
+        ========================= -->
+
+        <h1 class="welcome">
+
+            Welcome, {{ name }}! 👋
+
+        </h1>
+
+        <p class="subtitle">
+
+            Your personalized AI-powered study dashboard
+
+        </p>
+
+
+        <!-- =========================
+             SEARCH
+        ========================= -->
+
+        <div class="search-box">
+
+            <input
+                type="text"
+                id="searchInput"
+                placeholder="🔍 Search subject or topic..."
+            >
+
+            <button onclick="searchTopic()">
+
+                Search
+
+            </button>
+
+        </div>
+
+
+        <!-- =========================
+             STATISTICS
+        ========================= -->
+
+        <div class="stats">
+
+
+            <div class="stat">
+
+                <div class="stat-icon">
+                    📝
+                </div>
+
+                <h3>
+                    Quizzes Attempted
+                </h3>
+
+                <div class="number">
+                    {{ total_quizzes }}
+                </div>
+
+            </div>
+
+
+            <div class="stat">
+
+                <div class="stat-icon">
+                    🎯
+                </div>
+
+                <h3>
+                    Average Score
+                </h3>
+
+                <div class="number">
+                    {{ average_score }}%
+                </div>
+
+            </div>
+
+
+            <div class="stat">
+
+                <div class="stat-icon">
+                    📚
+                </div>
+
+                <h3>
+                    Topics Studied
+                </h3>
+
+                <div class="number">
+                    {{ topics }}
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+        <!-- =========================
+             FEATURES
+        ========================= -->
+
+        <div class="features">
+
+
+            <!-- =========================
+                 AI CHAT
+            ========================= -->
+
+            <div class="card">
+
+                <h2>
+                    🤖 AI Chat
+                </h2>
+
+                <p>
+                    Ask questions about your subjects
+                    and get explanations from your
+                    AI Study Assistant.
+                </p>
+
+                <a href="/chat"
+                   class="btn">
+
+                    Open Chat
+
+                </a>
+
+            </div>
+
+
+            <!-- =========================
+                 SMART NOTES
+            ========================= -->
+
+            <div class="card">
+
+                <h2>
+                    📚 Smart Notes
+                </h2>
+
+                <p>
+                    Enter any topic and generate
+                    simple, clear and exam-friendly
+                    study notes using AI.
+                </p>
+
+                <a href="/notes"
+                   class="btn">
+
+                    Generate Notes
+
+                </a>
+
+            </div>
+
+
+            <!-- =========================
+                 AI QUIZ
+            ========================= -->
+
+            <div class="card">
+
+                <h2>
+                    📝 AI Quiz
+                </h2>
+
+                <p>
+                    Generate quizzes based on your
+                    subject and topic and test your
+                    knowledge.
+                </p>
+
+                <a href="/quiz"
+                   class="btn">
+
+                    Take Quiz
+
+                </a>
+
+            </div>
+
+
+            <!-- =========================
+                 PROGRESS
+            ========================= -->
+
+            <div class="card">
+
+                <h2>
+                    📊 Progress
+                </h2>
+
+                <p>
+                    View your quiz performance,
+                    average score and subject-wise
+                    learning progress.
+                </p>
+
+                <a href="/progress"
+                   class="btn">
+
+                    View Progress
+
+                </a>
+
+            </div>
+
+
+            <!-- =========================
+                 SUBJECTS
+            ========================= -->
+
+            <div class="card">
+
+                <h2>
+                    📚 Subjects
+                </h2>
+
+                <p>
+                    Explore your subjects and study
+                    different topics with your
+                    AI Study Assistant.
+                </p>
+
+                <a href="/subjects"
+                   class="btn">
+
+                    View Subjects
+
+                </a>
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+
+    <!-- =========================
+         THEME JAVASCRIPT
+    ========================= -->
+
+    <script>
+
+        function toggleTheme() {
+
+            document.body.classList.toggle("dark");
+
+            const button =
+                document.getElementById("themeBtn");
+
+
+            if (document.body.classList.contains("dark")) {
+
+                button.innerText = "☀️ Light Mode";
+
+                localStorage.setItem("theme", "dark");
+
+            } else {
+
+                button.innerText = "🌙 Dark Mode";
+
+                localStorage.setItem("theme", "light");
+
+            }
+
+        }
+
+
+        // Remember selected theme
+
+        if (localStorage.getItem("theme") === "dark") {
+
+            document.body.classList.add("dark");
+
+            document.getElementById("themeBtn").innerText =
+                "☀️ Light Mode";
+
+        }
+
+    </script>
+
+
+    <!-- =========================
+         EXTERNAL THEME JS
+    ========================= -->
+
+    <script src="{{ url_for('static', filename='theme.js') }}"></script>
+
+
+    <!-- =========================
+         SEARCH JAVASCRIPT
+    ========================= -->
+
+    <script>
+
+        function searchTopic() {
+
+            const search =
+                document.getElementById("searchInput")
+                .value
+                .trim();
+
+
+            if (!search) {
+
+                alert(
+                    "Please enter a subject or topic."
+                );
+
+                return;
+            }
+
+
+            const topic =
+                encodeURIComponent(search);
+
+
+            window.location.href =
+                "/chat?topic=" + topic;
+
+        }
+
+    </script>
+
+
+</body>
+
+</html>

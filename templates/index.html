@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Study Assistant</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f5f7ff;
+            color: #222;
+        }
+
+        header {
+            background: #4f46e5;
+            color: rgb(209, 222, 203);
+            padding: 18px 7%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        nav a {
+            color: rgb(238, 245, 229);
+            text-decoration: none;
+            margin-left: 25px;
+            font-size: 16px;
+        }
+
+        nav a:hover {
+            text-decoration: underline;
+        }
+
+        .hero {
+            min-height: 500px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 60px 8%;
+        }
+
+        .hero-text {
+            width: 55%;
+        }
+
+        .hero-text h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        .hero-text h1 span {
+            color: #4f46e5;
+        }
+
+        .hero-text p {
+            font-size: 19px;
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 30px;
+        }
+
+        .btn {
+            display: inline-block;
+            background: #4f46e5;
+            color: rgb(234, 236, 233);
+            padding: 13px 25px;
+            border-radius: 7px;
+            text-decoration: none;
+            margin-right: 10px;
+        }
+
+        .btn:hover {
+            background: #3730a3;
+        }
+
+        .features {
+            padding: 50px 8%;
+            background: white;
+            text-align: center;
+        }
+
+        .features h2 {
+            font-size: 32px;
+            margin-bottom: 35px;
+        }
+
+        .cards {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            flex-wrap: wrap;
+        }
+
+        .card {
+            width: 220px;
+            padding: 25px;
+            background: #f5f7ff;
+            border-radius: 12px;
+            box-shadow: 0 3px 10px #ddd;
+        }
+
+        .card h3 {
+            margin: 15px 0 10px;
+        }
+
+        .card p {
+            color: #666;
+            line-height: 1.5;
+        }
+
+        footer {
+            background: #1f2937;
+            color: white;
+            text-align: center;
+            padding: 18px;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <div class="logo">🤖 AI Study Assistant</div>
+
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="login.html">Login</a>
+        <a href="register.html">Register</a>
+    </nav>
+</header>
+
+<section class="hero">
+
+    <div class="hero-text">
+        <h1>Study Smarter with <span>AI</span></h1>
+
+        <p>
+            Your personal AI Study Assistant helps you understand
+            difficult topics, create notes, practice quizzes and
+            track your learning progress.
+        </p>
+
+        <a href="login.html" class="btn">Get Started</a>
+        <a href="#features" class="btn">Explore Features</a>
+    </div>
+
+    <div>
+        <div style="font-size: 150px;">🤖📚</div>
+    </div>
+
+</section>
+
+<section class="features" id="features">
+
+    <h2>What Can You Do?</h2>
+
+    <div class="cards">
+
+        <div class="card">
+            <div style="font-size:45px;">💬</div>
+            <h3>AI Chat</h3>
+            <p>Ask questions and get easy-to-understand answers.</p>
+        </div>
+
+        <div class="card">
+            <div style="font-size:45px;">📝</div>
+            <h3>Smart Notes</h3>
+            <p>Generate short and useful notes for any topic.</p>
+        </div>
+
+        <div class="card">
+            <div style="font-size:45px;">❓</div>
+            <h3>AI Quiz</h3>
+            <p>Practice MCQs and check your knowledge.</p>
+        </div>
+
+        <div class="card">
+            <div style="font-size:45px;">📊</div>
+            <h3>Progress</h3>
+            <p>Track your quiz scores and learning progress.</p>
+        </div>
+
+    </div>
+
+</section>
+
+
+</body>
+</html>

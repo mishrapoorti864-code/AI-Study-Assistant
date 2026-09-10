@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>AI Quiz Generator</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f7ff;
+        }
+
+        .header {
+            background: #243b9b;
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        .header-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .back-btn {
+            color: white;
+            text-decoration: none;
+            background: #1a2d78;
+            padding: 10px 18px;
+            border-radius: 6px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            color: #243b9b;
+            margin-top: 0;
+        }
+
+        label {
+            display: block;
+            margin-top: 18px;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        select {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 16px;
+            background: white;
+            color: #111;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            margin-top: 22px;
+            background: #243b9b;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #1a2d78;
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        #loading {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+            color: #243b9b;
+            font-weight: bold;
+        }
+
+        #quizBox {
+            display: none;
+            margin-top: 30px;
+        }
+
+        .question {
+            background: #ffffff !important;
+            color: #111827 !important;
+            padding: 20px;
+            margin-bottom: 18px;
+            border: 1px solid #d6dff5;
+            border-left: 5px solid #243b9b;
+            border-radius: 8px;
+            opacity: 1 !important;
+        }
+
+        .question h3 {
+            color: #111827 !important;
+            margin-top: 0;
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .option {
+            margin: 12px 0;
+            padding: 8px;
+            color: #111827 !important;
+        }
+
+        .option input[type="radio"] {
+            width: auto;
+            margin-right: 8px;
+            accent-color: #243b9b;
+        }
+
+        .option label {
+            display: inline;
+            margin: 0;
+            color: #111827 !important;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        #result {
+            display: none;
+            margin-top: 25px;
+            padding: 20px;
+            background: #eef2ff !important;
+            color: #111827 !important;
+            border: 1px solid #c7d2fe;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .error {
+            color: #c62828;
+            font-weight: bold;
+        }
+
+        /* DARK MODE */
+
+        body.dark {
+            background: #121212;
+            color: #eeeeee;
+        }
+
+        body.dark .card {
+            background: #1e1e1e;
+            color: #eeeeee;
+        }
+
+        body.dark h2 {
+            color: #8fa7ff;
+        }
+
+        body.dark input[type="text"],
+        body.dark select {
+            background: #252525;
+            color: white;
+            border-color: #555;
+        }
+
+        body.dark .question {
+            background: #252525 !important;
+            color: #ffffff !important;
+            border-color: #444 !important;
+            border-left-color: #6d83ff !important;
+        }
+
+        body.dark .question h3 {
+            color: #ffffff !important;
+        }
+
+        body.dark .option {
+            color: #eeeeee !important;
+        }
+
+        body.dark .option label {
+            color: #eeeeee !important;
+        }
+
+        body.dark #result {
+            background: #252b45 !important;
+            color: #ffffff !important;
+            border-color: #4b5563 !important;
+        }
+
+        @media (max-width: 600px) {
+
+            .header {
+                padding: 15px;
+            }
+
+            .header h1 {
+                font-size: 18px;
+            }
+
+            .back-btn {
+                padding: 8px 12px;
+                font-size: 14px;
+            }
+
+            .container {
+                margin: 20px auto;
+                padding: 15px;
+            }
+
+            .card {
+                padding: 20px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- HEADER -->
+
+    <div class="header">
+
+        <h1>
+            🤖 AI Study Assistant
+        </h1>
+
+        <div class="header-buttons">
+
+            <a href="/subjects"
+               class="back-btn">
+
+                📚 Subjects
+
+            </a>
+
+            <a href="/dashboard"
+               class="back-btn">
+
+                Dashboard
+
+            </a>
+
+        </div>
+
+    </div>
+
+
+
+    <div class="container">
+
+        <div class="card">
+
+
+            <h2>
+                📝 AI Quiz Generator
+            </h2>
+
+            <p>
+                Generate a quiz using Artificial Intelligence.
+            </p>
+
+
+
+            <!-- SUBJECT -->
+
+            <label for="subject">
+                Subject
+            </label>
+
+            <select id="subject">
+
+                <option value="Computer Organization">
+                    Computer Organization
+                </option>
+
+                <option value="Data Structures">
+                    Data Structures
+                </option>
+
+                <option value="Digital Electronics">
+                    Digital Electronics
+                </option>
+
+                <option value="C++ Programming">
+                    C++ Programming
+                </option>
+
+                <option value="Database Management">
+                    Database Management
+                </option>
+
+                <option value="Computer Networks">
+                    Computer Networks
+                </option>
+
+                <option value="Operating System">
+                    Operating System
+                </option>
+
+                <option value="Web Development">
+                    Web Development
+                </option>
+
+            </select>
+
+
+
+            <!-- TOPIC -->
+
+            <label for="topic">
+                Topic
+            </label>
+
+            <input
+                type="text"
+                id="topic"
+                placeholder="Example: Multiplexer"
+            >
+
+
+
+            <!-- GENERATE -->
+
+            <button
+                id="generateBtn"
+                onclick="generateQuiz()">
+
+                🎯 Generate Quiz
+
+            </button>
+
+
+
+            <!-- LOADING -->
+
+            <div id="loading">
+
+                🤖 AI is generating your quiz...
+
+            </div>
+
+
+
+            <!-- QUIZ -->
+
+            <div id="quizBox"></div>
+
+
+
+            <!-- SUBMIT -->
+
+            <button
+                id="submitBtn"
+                onclick="checkQuiz()"
+                style="display:none;">
+
+                Submit Quiz
+
+            </button>
+
+
+
+            <!-- RESULT -->
+
+            <div id="result"></div>
+
+
+        </div>
+
+    </div>
+
+
+
+<script>
+
+
+let correctAnswers = [];
+
+let quizSubmitted = false;
+
+
+
+/* ================================
+   LOAD SUBJECT + TOPIC FROM URL
+================================ */
+
+function loadTopicFromURL() {
+
+    const params =
+        new URLSearchParams(
+            window.location.search
+        );
+
+
+    const subject =
+        params.get("subject");
+
+
+    const topic =
+        params.get("topic");
+
+
+    const subjectInput =
+        document.getElementById("subject");
+
+
+    const topicInput =
+        document.getElementById("topic");
+
+
+    /* Set Subject */
+
+    if (subject) {
+
+        for (
+            let i = 0;
+            i < subjectInput.options.length;
+            i++
+        ) {
+
+            if (
+                subjectInput.options[i].value
+                === subject
+            ) {
+
+                subjectInput.selectedIndex = i;
+
+                break;
+
+            }
+
+        }
+
+    }
+
+
+    /* Set Topic */
+
+    if (topic) {
+
+        topicInput.value = topic;
+
+    }
+
+}
+
+
+
+/* ================================
+   GENERATE QUIZ
+================================ */
+
+async function generateQuiz() {
+
+
+    const subject =
+        document.getElementById("subject").value;
+
+
+    const topic =
+        document.getElementById("topic").value.trim();
+
+
+    const quizBox =
+        document.getElementById("quizBox");
+
+
+    const loading =
+        document.getElementById("loading");
+
+
+    const submitBtn =
+        document.getElementById("submitBtn");
+
+
+    const result =
+        document.getElementById("result");
+
+
+    const generateBtn =
+        document.getElementById("generateBtn");
+
+
+    if (!topic) {
+
+        alert("Please enter a topic.");
+
+        return;
+
+    }
+
+
+    /* Reset */
+
+    correctAnswers = [];
+
+    quizSubmitted = false;
+
+    quizBox.innerHTML = "";
+
+    result.innerHTML = "";
+
+    result.style.display = "none";
+
+    quizBox.style.display = "none";
+
+    submitBtn.style.display = "none";
+
+    submitBtn.disabled = false;
+
+    submitBtn.innerText = "Submit Quiz";
+
+    loading.style.display = "block";
+
+    generateBtn.disabled = true;
+
+
+    try {
+
+
+        const response =
+            await fetch(
+                "/api/quiz",
+                {
+
+                    method: "POST",
+
+                    headers: {
+
+                        "Content-Type":
+                            "application/json"
+
+                    },
+
+                    body: JSON.stringify({
+
+                        subject: subject,
+
+                        topic: topic
+
+                    })
+
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                data.error ||
+                "Quiz generation failed."
+            );
+
+        }
+
+
+        displayQuiz(data.quiz);
+
+
+    }
+
+    catch (error) {
+
+        quizBox.innerHTML = `
+
+            <p class="error">
+
+                ❌ Error:
+                ${escapeHtml(error.message)}
+
+            </p>
+
+        `;
+
+        quizBox.style.display = "block";
+
+    }
+
+    finally {
+
+        loading.style.display = "none";
+
+        generateBtn.disabled = false;
+
+    }
+
+}
+
+
+
+/* ================================
+   DISPLAY QUIZ
+================================ */
+
+function displayQuiz(text) {
+
+
+    const quizBox =
+        document.getElementById("quizBox");
+
+
+    const submitBtn =
+        document.getElementById("submitBtn");
+
+
+    correctAnswers = [];
+
+
+    const questions =
+        text
+        .split(/Q\d+\./)
+        .filter(
+            q => q.trim()
+        );
+
+
+    let html = "";
+
+
+    questions.forEach(
+        (question, index) => {
+
+
+            const lines =
+                question
+                .split("\n")
+                .map(
+                    line => line.trim()
+                )
+                .filter(
+                    line => line
+                );
+
+
+            if (lines.length < 6) {
+
+                return;
+
+            }
+
+
+            const questionText =
+                lines[0];
+
+
+            let options = [];
+
+
+            for (
+                let i = 1;
+                i < lines.length;
+                i++
+            ) {
+
+                if (
+                    /^[A-D]\./i.test(
+                        lines[i]
+                    )
+                ) {
+
+                    options.push(
+
+                        lines[i]
+                        .replace(
+                            /^[A-D]\.\s*/,
+                            ""
+                        )
+
+                    );
+
+                }
+
+            }
+
+
+            const answerLine =
+                lines.find(
+                    line =>
+                        /^Answer:/i.test(line)
+                );
+
+
+            if (
+                !answerLine ||
+                options.length !== 4
+            ) {
+
+                return;
+
+            }
+
+
+            const answer =
+                answerLine
+                .split(":")[1]
+                .trim()
+                .charAt(0)
+                .toUpperCase();
+
+
+            correctAnswers.push(answer);
+
+
+            html += `
+
+                <div class="question">
+
+                    <h3>
+
+                        Q${correctAnswers.length}.
+                        ${escapeHtml(questionText)}
+
+                    </h3>
+
+
+                    ${options.map(
+                        (option, i) => {
+
+
+                            const letter =
+                                String.fromCharCode(
+                                    65 + i
+                                );
+
+
+                            return `
+
+                                <div class="option">
+
+                                    <input
+                                        type="radio"
+                                        name="q${correctAnswers.length - 1}"
+                                        value="${letter}"
+                                    >
+
+                                    <label>
+
+                                        ${letter}.
+                                        ${escapeHtml(option)}
+
+                                    </label>
+
+                                </div>
+
+                            `;
+
+                        }
+                    ).join("")}
+
+
+                </div>
+
+            `;
+
+        }
+    );
+
+
+    if (
+        correctAnswers.length === 0
+    ) {
+
+        quizBox.innerHTML = `
+
+            <p class="error">
+
+                ❌ Quiz format could not be read.
+                Please generate the quiz again.
+
+            </p>
+
+        `;
+
+        quizBox.style.display = "block";
+
+        return;
+
+    }
+
+
+    quizBox.innerHTML = html;
+
+    quizBox.style.display = "block";
+
+    submitBtn.style.display = "block";
+
+}
+
+
+
+/* ================================
+   CHECK QUIZ
+================================ */
+
+async function checkQuiz() {
+
+
+    if (quizSubmitted) {
+
+        return;
+
+    }
+
+
+    let score = 0;
+
+
+    correctAnswers.forEach(
+        (correct, index) => {
+
+
+            const selected =
+                document.querySelector(
+                    `input[name="q${index}"]:checked`
+                );
+
+
+            if (
+                selected &&
+                selected.value === correct
+            ) {
+
+                score++;
+
+            }
+
+        }
+    );
+
+
+    const total =
+        correctAnswers.length;
+
+
+    if (total === 0) {
+
+        alert(
+            "Please generate a quiz first."
+        );
+
+        return;
+
+    }
+
+
+    const percentage =
+        Math.round(
+            (score / total) * 100
+        );
+
+
+    const result =
+        document.getElementById("result");
+
+
+    result.innerHTML = `
+
+        🎉 Your Score:
+        ${score} / ${total}
+
+        <br><br>
+
+        📊 Percentage:
+        ${percentage}%
+
+    `;
+
+
+    result.style.display = "block";
+
+
+    /* Prevent second submission */
+
+    quizSubmitted = true;
+
+
+    const submitBtn =
+        document.getElementById("submitBtn");
+
+
+    submitBtn.disabled = true;
+
+    submitBtn.innerText =
+        "Quiz Submitted ✓";
+
+
+
+    /* =========================
+       SAVE RESULT
+    ========================= */
+
+    const subject =
+        document.getElementById("subject").value;
+
+
+    const topic =
+        document.getElementById("topic").value.trim();
+
+
+    try {
+
+
+        const response =
+            await fetch(
+                "/api/quiz-result",
+                {
+
+                    method: "POST",
+
+                    headers: {
+
+                        "Content-Type":
+                            "application/json"
+
+                    },
+
+                    body: JSON.stringify({
+
+                        subject: subject,
+
+                        topic: topic,
+
+                        score: score,
+
+                        total: total
+
+                    })
+
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            console.log(
+                "Result save error:",
+                data.error
+            );
+
+        }
+
+        else {
+
+            console.log(
+                "Quiz result saved successfully."
+            );
+
+        }
+
+    }
+
+    catch (error) {
+
+        console.log(
+            "Could not save quiz result:",
+            error
+        );
+
+    }
+
+}
+
+
+
+/* ================================
+   ESCAPE HTML
+================================ */
+
+function escapeHtml(text) {
+
+    const div =
+        document.createElement("div");
+
+    div.textContent = text;
+
+    return div.innerHTML;
+
+}
+
+
+
+/* ================================
+   PAGE LOAD
+================================ */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        loadTopicFromURL();
+
+    }
+);
+
+</script>
+
+
+
+<script src="{{ url_for('static', filename='theme.js') }}"></script>
+
+
+</body>
+
+</html>
