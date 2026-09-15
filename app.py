@@ -129,7 +129,7 @@ def register():
 
             print("REGISTER ERROR:", repr(e))
 
-            return "Registration failed."
+            return f"Registration failed: {str(e)}", 500
 
     return render_template("register.html")
 
