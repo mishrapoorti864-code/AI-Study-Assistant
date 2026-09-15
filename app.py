@@ -61,6 +61,10 @@ def init_db():
     conn.commit()
     conn.close()
 
+    #Important:
+    #Gunicorn/Render par bhi database initialize hoga
+    init_db()
+
 
 # =========================
 # HOME
@@ -942,8 +946,6 @@ def quiz_history():
 # =========================
 
 if __name__ == "__main__":
-
-    init_db()
 
     app.run(
         debug=True
