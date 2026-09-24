@@ -27,12 +27,9 @@ app.secret_key = "ai-study-assistant-secret-key"
 # DATABASE
 # =========================
 
-BASE_DIR=os.path.dirname(os.path.abspath(__file__))
-DATABASE=os.path.join(BASE_DIR,"database.db")
-
 def init_db():
 
-    conn = sqlite3.connect(DATABASE)
+    conn = sqlite3.connect("database.db")
     cursor = conn.cursor()
 
     # Users table
@@ -63,9 +60,6 @@ def init_db():
 
     conn.commit()
     conn.close()
-
-    #Render par bhi database tables create hogi
-    init_db()
 
 
 # =========================
@@ -955,7 +949,4 @@ init_db()
 # =========================
 
 if __name__ == "__main__":
-
-    app.run(
-        debug=True
-    )
+      app.run(debug=True)
